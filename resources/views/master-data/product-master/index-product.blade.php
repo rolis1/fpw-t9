@@ -33,155 +33,178 @@
                 >
                     Search
                 </button>
-
             </form>
 
-            {{-- Tombol tambah data --}}
-            <a href="{{ route('product-create') }}">
-                <button
-                    class="px-6 py-3 mb-4 text-white bg-green-500 border border-green-500 rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-                    Add Product Data
-                </button>
-            </a>
+            {{-- Tombol tambah data & export --}}
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+                <a href="{{ route('product-create') }}">
+                    <button
+                        class="px-6 py-3 text-white bg-green-500 border border-green-500 rounded-lg shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        Add Product Data
+                    </button>
+                </a>
+
+                {{-- Tombol Export ke Excel --}}
+                <a href="{{ route('product-export-excel') }}">
+                    <button
+                        class="px-6 py-3 text-white bg-yellow-500 border border-yellow-500 rounded-lg shadow hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                        Export to Excel
+                    </button>
+                </a>
+
+                {{-- Tombol Export ke PDF --}}
+                <a href="{{ route('product-export-pdf') }}">
+                    <button
+                        class="px-6 py-3 text-white bg-red-500 border border-red-500 rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        Export to PDF
+                    </button>
+                </a>
+
+                {{-- Tombol Export ke JPG --}}
+                <a href="{{ route('product-export-jpg') }}">
+                    <button
+                        class="px-6 py-3 text-white bg-purple-500 border border-purple-500 rounded-lg shadow hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        Export to Image
+                    </button>
+                </a>
+            </div>
 
             {{-- Tabel data produk --}}
             <table class="min-w-full border border-collapse border-gray-200">
                 <thead>
-    <tr class="bg-gray-100">
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">ID</th>
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">Product Name</th>
+                    <tr class="bg-gray-100">
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">ID</th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">Product Name</th>
 
-        {{-- Kolom sortable dengan toggle icon --}}
-        @php
-            $sortBy = request('sort_by');
-            $sortOrder = request('sort_order') === 'asc' ? 'desc' : 'asc';
-        @endphp
+                        {{-- Kolom sortable --}}
+                        @php
+                            $sortBy = request('sort_by');
+                            $sortOrder = request('sort_order') === 'asc' ? 'desc' : 'asc';
+                        @endphp
 
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
-            <a href="{{ route('product-index', ['sort_by' => 'unit', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
-               class="flex items-center gap-1 hover:underline">
-                Unit
-                @if ($sortBy === 'unit')
-                    @if (request('sort_order') === 'asc')
-                        <span>▲</span>
-                    @else
-                        <span>▼</span>
-                    @endif
-                @else
-                    <span class="text-gray-400">↕</span>
-                @endif
-            </a>
-        </th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
+                            <a href="{{ route('product-index', ['sort_by' => 'unit', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
+                               class="flex items-center gap-1 hover:underline">
+                                Unit
+                                @if ($sortBy === 'unit')
+                                    @if (request('sort_order') === 'asc')
+                                        <span>▲</span>
+                                    @else
+                                        <span>▼</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">↕</span>
+                                @endif
+                            </a>
+                        </th>
 
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
-            <a href="{{ route('product-index', ['sort_by' => 'type', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
-               class="flex items-center gap-1 hover:underline">
-                Type
-                @if ($sortBy === 'type')
-                    @if (request('sort_order') === 'asc')
-                        <span>▲</span>
-                    @else
-                        <span>▼</span>
-                    @endif
-                @else
-                    <span class="text-gray-400">↕</span>
-                @endif
-            </a>
-        </th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
+                            <a href="{{ route('product-index', ['sort_by' => 'type', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
+                               class="flex items-center gap-1 hover:underline">
+                                Type
+                                @if ($sortBy === 'type')
+                                    @if (request('sort_order') === 'asc')
+                                        <span>▲</span>
+                                    @else
+                                        <span>▼</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">↕</span>
+                                @endif
+                            </a>
+                        </th>
 
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
-            <a href="{{ route('product-index', ['sort_by' => 'information', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
-               class="flex items-center gap-1 hover:underline">
-                Information
-                @if ($sortBy === 'information')
-                    @if (request('sort_order') === 'asc')
-                        <span>▲</span>
-                    @else
-                        <span>▼</span>
-                    @endif
-                @else
-                    <span class="text-gray-400">↕</span>
-                @endif
-            </a>
-        </th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
+                            <a href="{{ route('product-index', ['sort_by' => 'information', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
+                               class="flex items-center gap-1 hover:underline">
+                                Information
+                                @if ($sortBy === 'information')
+                                    @if (request('sort_order') === 'asc')
+                                        <span>▲</span>
+                                    @else
+                                        <span>▼</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">↕</span>
+                                @endif
+                            </a>
+                        </th>
 
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
-            <a href="{{ route('product-index', ['sort_by' => 'qty', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
-               class="flex items-center gap-1 hover:underline">
-                Qty
-                @if ($sortBy === 'qty')
-                    @if (request('sort_order') === 'asc')
-                        <span>▲</span>
-                    @else
-                        <span>▼</span>
-                    @endif
-                @else
-                    <span class="text-gray-400">↕</span>
-                @endif
-            </a>
-        </th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
+                            <a href="{{ route('product-index', ['sort_by' => 'qty', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
+                               class="flex items-center gap-1 hover:underline">
+                                Qty
+                                @if ($sortBy === 'qty')
+                                    @if (request('sort_order') === 'asc')
+                                        <span>▲</span>
+                                    @else
+                                        <span>▼</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">↕</span>
+                                @endif
+                            </a>
+                        </th>
 
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
-            <a href="{{ route('product-index', ['sort_by' => 'producer', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
-               class="flex items-center gap-1 hover:underline">
-                Producer
-                @if ($sortBy === 'producer')
-                    @if (request('sort_order') === 'asc')
-                        <span>▲</span>
-                    @else
-                        <span>▼</span>
-                    @endif
-                @else
-                    <span class="text-gray-400">↕</span>
-                @endif
-            </a>
-        </th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">
+                            <a href="{{ route('product-index', ['sort_by' => 'producer', 'sort_order' => $sortOrder, 'search' => request('search')]) }}"
+                               class="flex items-center gap-1 hover:underline">
+                                Producer
+                                @if ($sortBy === 'producer')
+                                    @if (request('sort_order') === 'asc')
+                                        <span>▲</span>
+                                    @else
+                                        <span>▼</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">↕</span>
+                                @endif
+                            </a>
+                        </th>
 
-        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">Aksi</th>
-    </tr>
-</thead>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">Aksi</th>
+                    </tr>
+                </thead>
 
                 <tbody>
-    @forelse ($products as $product)
-        <tr class="bg-white hover:bg-gray-50">
-            <td class="px-4 py-2 border border-gray-200">{{ $loop->iteration }}</td>
+                    @forelse ($products as $product)
+                        <tr class="bg-white hover:bg-gray-50">
+                            <td class="px-4 py-2 border border-gray-200">{{ $loop->iteration }}</td>
 
-            <td class="px-4 py-2 border border-gray-200">
-                <a href="{{ route('product-detail', $product->id) }}"
-                    class="text-blue-600 hover:text-blue-800 hover:underline">
-                    {{ $product->product_name }}
-                </a>
-            </td>
+                            <td class="px-4 py-2 border border-gray-200">
+                                <a href="{{ route('product-detail', $product->id) }}"
+                                    class="text-blue-600 hover:text-blue-800 hover:underline">
+                                    {{ $product->product_name }}
+                                </a>
+                            </td>
 
-            <td class="px-4 py-2 border border-gray-200">{{ $product->unit }}</td>
-            <td class="px-4 py-2 border border-gray-200">{{ $product->type }}</td>
-            <td class="px-4 py-2 border border-gray-200">{{ $product->information }}</td>
-            <td class="px-4 py-2 border border-gray-200">{{ $product->qty }}</td>
-            <td class="px-4 py-2 border border-gray-200">{{ $product->producer }}</td>
+                            <td class="px-4 py-2 border border-gray-200">{{ $product->unit }}</td>
+                            <td class="px-4 py-2 border border-gray-200">{{ $product->type }}</td>
+                            <td class="px-4 py-2 border border-gray-200">{{ $product->information }}</td>
+                            <td class="px-4 py-2 border border-gray-200">{{ $product->qty }}</td>
+                            <td class="px-4 py-2 border border-gray-200">{{ $product->producer }}</td>
 
-            <td class="px-4 py-2 border border-gray-200">
-                <a href="{{ route('product-edit', $product->id) }}"
-                    class="px-2 text-blue-600 hover:text-blue-800">Edit</a>
-                <button class="px-2 text-red-600 hover:text-red-800"
-                    onclick="confirmDelete('{{ route('product-delete', $product->id) }}')">
-                    Hapus
-                </button>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="8" class="text-center py-4">
-                <p class="mb-4 text-2xl font-bold text-red-600">No products found</p>
-            </td>
-        </tr>
-    @endforelse
-</tbody>
-
-
+                            <td class="px-4 py-2 border border-gray-200">
+                                <a href="{{ route('product-edit', $product->id) }}"
+                                    class="px-2 text-blue-600 hover:text-blue-800">Edit</a>
+                                <button class="px-2 text-red-600 hover:text-red-800"
+                                    onclick="confirmDelete('{{ route('product-delete', $product->id) }}')">
+                                    Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <p class="mb-4 text-2xl font-bold text-red-600">No products found</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
             </table>
+
             <div class="mt-4">
                 {{ $products->appends(['search' => request('search')])->links() }}
-
             </div>
         </div>
     </div>

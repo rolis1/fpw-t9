@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductsExport;
+use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
+use Spatie\Browsershot\Browsershot;
+
 
 class ProductController extends Controller
 {
@@ -14,28 +19,28 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-{
-    $query = Product::query();
+    {
+        $query = Product::query();
 
-    // Filter pencarian
-    if ($request->has('search') && $request->input('search') != '') {
-        $search = $request->input('search');
-        $query->where('product_name', 'like', '%' . $search . '%')
-              ->orWhere('type', 'like', '%' . $search . '%')
-              ->orWhere('producer', 'like', '%' . $search . '%');
+        // Filter pencarian
+        if ($request->has('search') && $request->input('search') != '') {
+            $search = $request->input('search');
+            $query->where('product_name', 'like', '%' . $search . '%')
+                ->orWhere('type', 'like', '%' . $search . '%')
+                ->orWhere('producer', 'like', '%' . $search . '%');
+        }
+
+        // Sorting (default ASC)
+        $sortBy = $request->get('sort_by', 'id');
+        $sortOrder = $request->get('sort_order', 'asc');
+
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Pagination
+        $products = $query->paginate(2)->appends($request->all());
+
+        return view("master-data.product-master.index-product", compact("products"));
     }
-
-    // Sorting (default ASC)
-    $sortBy = $request->get('sort_by', 'id');
-    $sortOrder = $request->get('sort_order', 'asc');
-
-    $query->orderBy($sortBy, $sortOrder);
-
-    // Pagination
-    $products = $query->paginate(2)->appends($request->all());
-
-    return view("master-data.product-master.index-product", compact("products"));
-}
 
     /**
      * Show the form for creating a new resource.
@@ -78,7 +83,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         return view("master-data.product-master.detail-product", data: compact(var_name: 'product'));
-
     }
 
     /**
@@ -122,7 +126,6 @@ class ProductController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Product update successfully!');
-
     }
 
     /**
@@ -137,8 +140,31 @@ class ProductController extends Controller
         if ($product) {
             $product->delete();
             return redirect()->back()->with('success', 'Product Udh Dihapus');
-
         }
         return redirect()->back()->with('error', 'Product nya ga ada');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $products = Product::all();
+        $pdf = DomPDF::loadView('exports.products-pdf', compact('products'))->setPaper('a4', 'landscape');
+        return $pdf->download('products.pdf');
+    }
+
+    public function exportJpg()
+    {
+        $html = view('exports.products-pdf', ['products' => Product::all()])->render();
+
+        $path = storage_path('app/public/products.jpg');
+        Browsershot::html($html)
+            ->windowSize(1920, 1080)
+            ->save($path);
+
+        return response()->download($path);
     }
 }
