@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductsExport;
 use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
 use Spatie\Browsershot\Browsershot;
+use App\Models\Supplier;
 
 
 class ProductController extends Controller
@@ -20,7 +21,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::with('supplier');
 
         // Filter pencarian
         if ($request->has('search') && $request->input('search') != '') {
@@ -38,7 +39,7 @@ class ProductController extends Controller
 
         // Pagination
         $products = $query->paginate(2)->appends($request->all());
-
+        // return $products;
         return view("master-data.product-master.index-product", compact("products"));
     }
 
@@ -49,7 +50,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view("master-data.product-master.create-product");
+        $suppliers = Supplier::all();
+        return view("master-data.product-master.create-product", compact("suppliers"));
     }
 
     /**
@@ -67,6 +69,7 @@ class ProductController extends Controller
             'information' => 'nullable|string',
             'qty' => 'required|integer',
             'producer' => 'required|string|max:255',
+            'supplier_id' => 'required|exists:suppliers,id',
         ]);
 
         Product::create($validasi_data);

@@ -9,7 +9,10 @@ class Product extends Model
 {
     use HasFactory;
 
-    // tambahkan ini kalau nama tabelnya "product" tunggal
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
     protected $table = 'product';
 
     protected $fillable = [
@@ -19,5 +22,6 @@ class Product extends Model
         'information',
         'qty',
         'producer',
+        'supplier_id',
     ];
 }

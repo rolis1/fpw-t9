@@ -161,6 +161,7 @@
                                 @endif
                             </a>
                         </th>
+                        <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">Supplier Name</th>
 
                         <th class="px-4 py-2 text-left text-gray-600 border border-gray-200">Aksi</th>
                     </tr>
@@ -183,6 +184,7 @@
                             <td class="px-4 py-2 border border-gray-200">{{ $product->information }}</td>
                             <td class="px-4 py-2 border border-gray-200">{{ $product->qty }}</td>
                             <td class="px-4 py-2 border border-gray-200">{{ $product->producer }}</td>
+                            <td class="px-4 py-2 border border-gray-200">{{ $product->supplier->supplier_name ?? 'Asus Indo'}}</td>
 
                             <td class="px-4 py-2 border border-gray-200">
                                 <a href="{{ route('product-edit', $product->id) }}"
